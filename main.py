@@ -21,6 +21,15 @@ import matplotlib.gridspec as gridspec
 
 # from data_loader import cifar10, cifar100
 
+def get_same_index(target, labels):
+    label_indices = []
+
+    for i in range(len(target)):
+        if target[i] in labels:
+            label_indices.append(i)
+
+    return label_indices
+
 
 def online_mean_and_sd(loader):
     """Compute the mean and sd in an online fashion
@@ -120,21 +129,21 @@ with open(args.outfile, 'w') as file:
         print("Loading training examples for classes", all_classes[s: s + num_classes])
         train_set = dsets.CIFAR10(root='./data',
                              train=True,
-                             classes=all_classes[s:s + num_classes],
                              download=True,
-                             transform=transform,
-                             mean_image=mean_image)
-        train_loader = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size,
-                                                   shuffle=True, num_workers=12)
+                             transform=transform)
+        train_indices = get_same_index(train_set.targets, all_classes[s:s+num_classes])
+        train_loader = torch.utils.data.DataLoader(dataset=train_set,
+                                           batch_size=args.batch_size, num_workers=12,
+                                           sampler=torch.utils.data.sampler.SubsetRandomSampler(train_indices))
 
-        test_set = cifar100(root='./data',
-                            train=False,
-                            classes=all_classes[:s + num_classes],
-                            download=True,
-                            transform=None,
-                            mean_image=mean_image)
-        test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size,
-                                                  shuffle=False, num_workers=12)
+        test_set = dsets.CIFAR10(root='./data',
+                             train=True,
+                             download=True,
+                             transform=transform)
+        test_indices = get_same_index(train_set.targets, all_classes[:s + num_classes])
+        train_loader = torch.utils.data.DataLoader(dataset=train_set,
+                                                   batch_size=args.batch_size, num_workers=12,
+                                                   sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
         # Update representation via BackProp
         model.update(train_set, class_map, args)

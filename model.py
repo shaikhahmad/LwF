@@ -108,7 +108,7 @@ class Model(nn.Module):
 
 		# Save a copy to compute distillation outputs
 		prev_model = copy.deepcopy(self)
-		prev_model.cuda()
+		# prev_model.cuda()
 
 		classes = list(set(dataset.train_labels))
 		#print("Classes: ", classes)
