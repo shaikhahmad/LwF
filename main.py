@@ -140,12 +140,12 @@ with open(args.outfile, 'w') as file:
 
         train_indices = get_same_index(train_set.targets, all_classes[s:s+num_classes])
         train_loader = torch.utils.data.DataLoader(dataset=train_set,
-                                           batch_size=args.batch_size, num_workers=12,
+                                           batch_size=args.batch_size, num_workers=4,
                                            sampler=torch.utils.data.sampler.SubsetRandomSampler(train_indices))
 
         test_indices = get_same_index(test_set.targets, all_classes[:s + num_classes])
         test_loader = torch.utils.data.DataLoader(dataset=test_set,
-                                                   batch_size=args.batch_size, num_workers=12,
+                                                   batch_size=args.batch_size, num_workers=4,
                                                    sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
         # Update representation via BackProp
@@ -186,7 +186,7 @@ with open(args.outfile, 'w') as file:
         for i in range(model.n_known):
             test_indices = get_same_index(test_set.targets, all_classes[i * num_classes: (i + 1) * num_classes])
             test_loader = torch.utils.data.DataLoader(test_set, batch_size=min(500, len(test_set)),
-                                                      shuffle=False, num_workers=12,
+                                                      shuffle=False, num_workers=4,
                                                       sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
             total = 0.0
