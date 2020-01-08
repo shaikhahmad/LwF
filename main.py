@@ -146,7 +146,7 @@ with open(args.outfile, 'w') as file:
                              train=True,
                              download=True,
                              transform=transform)
-        test_indices = get_same_index(train_set.targets, all_classes[:s + num_classes])
+        test_indices = get_same_index(test_set.targets, all_classes[:s + num_classes])
         train_loader = torch.utils.data.DataLoader(dataset=train_set,
                                                    batch_size=args.batch_size, num_workers=12,
                                                    sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
@@ -161,7 +161,7 @@ with open(args.outfile, 'w') as file:
 
         total = 0.0
         correct = 0.0
-        for indices, images, labels in train_loader:
+        for images, labels in train_loader:
             images = Variable(images).cuda()
             preds = model.classify(images)
             preds = [map_reverse[pred] for pred in preds.cpu().numpy()]
@@ -174,7 +174,7 @@ with open(args.outfile, 'w') as file:
 
         total = 0.0
         correct = 0.0
-        for indices, images, labels in test_loader:
+        for images, labels in test_loader:
             images = Variable(images).cuda()
             preds = model.classify(images)
             preds = [map_reverse[pred] for pred in preds.cpu().numpy()]
@@ -187,18 +187,14 @@ with open(args.outfile, 'w') as file:
 
         # Accuracy matrix
         for i in range(model.n_known):
-            test_set = cifar100(root='./data',
-                                train=False,
-                                classes=all_classes[i * num_classes: (i + 1) * num_classes],
-                                download=True,
-                                transform=None,
-                                mean_image=mean_image)
+            test_set = dsets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+            test_indices = get_same_index(test_set.targets, all_classes[i * num_classes: (i + 1) * num_classes])
             test_loader = torch.utils.data.DataLoader(test_set, batch_size=min(500, len(test_set)),
                                                       shuffle=False, num_workers=12)
 
             total = 0.0
             correct = 0.0
-            for indices, images, labels in test_loader:
+            for images, labels in test_loader:
                 images = Variable(images).cuda()
                 preds = model.classify(images)
                 preds = [map_reverse[pred] for pred in preds.cpu().numpy()]
