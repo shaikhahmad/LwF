@@ -129,7 +129,7 @@ with open(args.outfile, 'w') as file:
     # print('Class map: ', class_map)
     # print('All classes: ', all_classes)
 
-    model = Model(1, class_map, args)
+    model = Model(num_classes, class_map, args)
     model.cuda()
     acc_matr = np.zeros((int(total_classes / num_classes), num_iters))
     for s in range(0, num_iters, num_classes):
