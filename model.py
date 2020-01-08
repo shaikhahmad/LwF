@@ -134,12 +134,6 @@ class Model(nn.Module):
         with tqdm(total=self.num_epochs) as pbar:
             for epoch in range(self.num_epochs):
 
-                # Modify learning rate
-                # if (epoch+1) in lower_rate_epoch:
-                # 	self.lr = self.lr * 1.0/lr_dec_factor
-                # 	for param_group in optimizer.param_groups:
-                # 		param_group['lr'] = self.lr
-
                 for i, (images, labels) in enumerate(loader):
                     seen_labels = []
                     images = Variable(torch.FloatTensor(images)).cuda()
