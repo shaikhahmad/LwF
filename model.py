@@ -110,7 +110,7 @@ class Model(nn.Module):
 		prev_model = copy.deepcopy(self)
 		# prev_model.cuda()
 
-		classes = list(set(dataset.train_labels))
+		classes = list(set(dataset.targets))
 		#print("Classes: ", classes)
 		print('Known: ', self.n_known)
 		if self.n_classes == 1 and self.n_known == 0:
