@@ -185,7 +185,7 @@ with open(args.outfile, 'w') as file:
         # Accuracy matrix
         for i in range(model.n_known):
             test_indices = get_same_index(test_set.targets, all_classes[i * num_classes: (i + 1) * num_classes])
-            test_loader = torch.utils.data.DataLoader(test_set, batch_size=min(500, len(test_set)),
+            test_loader = torch.utils.data.DataLoader(test_set, batch_size=min(200, len(test_set)),
                                                       shuffle=False, num_workers=4,
                                                       sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
