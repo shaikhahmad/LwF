@@ -120,7 +120,7 @@ with open(args.outfile, 'w') as file:
     # print('All classes: ', all_classes)
 
     model = Model(1, class_map, args)
-    # model.cuda()
+    model.cuda()
     acc_matr = np.zeros((int(total_classes / num_classes), num_iters))
     for s in range(0, num_iters, num_classes):
         # Load Datasets
