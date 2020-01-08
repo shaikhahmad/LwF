@@ -12,12 +12,11 @@ import time
 import copy
 
 import torchvision.models as models
-import torchvision.transforms as transforms
 
 
 def MultiClassCrossEntropy(logits, labels, T):
     # Ld = -1/N * sum(N) sum(C) softmax(label) * log(softmax(logit))
-    labels = Variable(labels.data, requires_grad=False).cuda()
+    labels = Variable(labels).cuda()
     outputs = torch.log_softmax(logits / T, dim=1)  # compute the log of softmax values
     labels = torch.softmax(labels / T, dim=1)
     # print('outputs: ', outputs)
@@ -25,7 +24,7 @@ def MultiClassCrossEntropy(logits, labels, T):
     outputs = torch.sum(outputs * labels, dim=1, keepdim=False)
     outputs = -torch.mean(outputs, dim=0, keepdim=False)
     # print('OUT: ', outputs)
-    return Variable(outputs.data, requires_grad=True).cuda()
+    return Variable(outputs).cuda()
 
 
 def kaiming_normal_init(m):

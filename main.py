@@ -2,24 +2,13 @@ from model import Model
 import torch
 
 torch.backends.cudnn.benchmark = True
-import torch.nn as nn
 import torchvision.datasets as dsets
-import torchvision.models as models
 import torchvision.transforms as transforms
 from torch.autograd import Variable
-import torch.optim as optim
-import torch.nn.functional as F
 import argparse
-import time
 import numpy as np
 import subprocess
 from numpy import random
-import copy
-
-# import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-
-# from data_loader import cifar10, cifar100
 
 def get_same_index(target, labels):
     label_indices = []
