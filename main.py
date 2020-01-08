@@ -197,7 +197,7 @@ with open(args.outfile, 'w') as file:
                 preds = [map_reverse[pred] for pred in preds.cpu().numpy()]
                 total += labels.size(0)
                 correct += (preds == labels.numpy()).sum()
-            print("s: {}, num_classes: {}, correct: {}, total: {}".format(s, num_classes, correct, total))
+            print("i: {},s: {}, num_classes: {}, correct: {}, total: {}".format(i, s, num_classes, correct, total))
             acc_matr[i, int(s / num_classes)] = (100 * correct / max(1, total))
 
         print("Accuracy matrix", acc_matr[:int(s / num_classes + 1), :int(s / num_classes + 1)])
