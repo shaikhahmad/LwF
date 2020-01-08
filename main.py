@@ -114,6 +114,10 @@ print("all_classes:", all_classes)
 # else:
 # perm_id = np.arange(args.total_classes)
 
+
+train_set = dsets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+test_set = dsets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+
 with open(args.outfile, 'w') as file:
     print("Classes, Train Accuracy, Test Accuracy", file=file)
 
@@ -133,19 +137,12 @@ with open(args.outfile, 'w') as file:
         print('Iteration: ', s)
         # print('Algo running: ', args.algo)
         print("Loading training examples for classes", all_classes[s: s + num_classes])
-        train_set = dsets.CIFAR10(root='./data',
-                             train=True,
-                             download=True,
-                             transform=transform)
+
         train_indices = get_same_index(train_set.targets, all_classes[s:s+num_classes])
         train_loader = torch.utils.data.DataLoader(dataset=train_set,
                                            batch_size=args.batch_size, num_workers=12,
                                            sampler=torch.utils.data.sampler.SubsetRandomSampler(train_indices))
 
-        test_set = dsets.CIFAR10(root='./data',
-                             train=True,
-                             download=True,
-                             transform=transform)
         test_indices = get_same_index(test_set.targets, all_classes[:s + num_classes])
         test_loader = torch.utils.data.DataLoader(dataset=train_set,
                                                    batch_size=args.batch_size, num_workers=12,
@@ -187,7 +184,6 @@ with open(args.outfile, 'w') as file:
 
         # Accuracy matrix
         for i in range(model.n_known):
-            test_set = dsets.CIFAR10(root='./data', train=True, download=True, transform=transform)
             test_indices = get_same_index(test_set.targets, all_classes[i * num_classes: (i + 1) * num_classes])
             test_loader = torch.utils.data.DataLoader(test_set, batch_size=min(500, len(test_set)),
                                                       shuffle=False, num_workers=12)
