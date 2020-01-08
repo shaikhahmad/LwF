@@ -53,7 +53,13 @@ def online_mean_and_sd(loader):
     return fst_moment, torch.sqrt(snd_moment - fst_moment ** 2)
 
 
-transform = None
+transform = transforms.Compose([
+                              transforms.Resize(224),
+                              # transforms.RandomCrop(32),
+                              # transforms.RandomHorizontalFlip(),
+                              transforms.ToTensor(),
+                              transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                          ])
 
 parser = argparse.ArgumentParser(description='Continuum learning')
 parser.add_argument('--outfile', default='temp_0.1.csv', type=str, help='Output file name')
