@@ -147,7 +147,7 @@ with open(args.outfile, 'w') as file:
                              download=True,
                              transform=transform)
         test_indices = get_same_index(test_set.targets, all_classes[:s + num_classes])
-        train_loader = torch.utils.data.DataLoader(dataset=train_set,
+        test_loader = torch.utils.data.DataLoader(dataset=train_set,
                                                    batch_size=args.batch_size, num_workers=12,
                                                    sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
