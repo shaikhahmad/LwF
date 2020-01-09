@@ -114,7 +114,6 @@ class Model(nn.Module):
             new_classes = [classes[i] for i in range(1, len(classes))]
         else:
             new_classes = [cl for cl in classes if class_map[cl] >= self.n_known]
-            print('-----------------------------',classes)
 
         if len(new_classes) > 0:
             self.increment_classes(new_classes)
@@ -147,6 +146,5 @@ class Model(nn.Module):
                 loss.backward()
                 optimizer.step()
 
-            print('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(epoch + 1, num_epochs, i + 1,
-                                                                np.ceil(len(loader.dataset) / batch_size), loss.data))
+            print('Epoch [{}/{}], Loss: {}'.format(epoch + 1, num_epochs, i + 1, loss.data))
         self.n_known = self.n_classes
