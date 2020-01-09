@@ -135,7 +135,6 @@ class Model(nn.Module):
                 optimizer.zero_grad()
                 logits = self.forward(images)
                 cls_loss = nn.CrossEntropyLoss()(logits, labels)
-                print(self.n_classes, len(new_classes))
                 if self.n_classes // len(new_classes) > 1:
                     dist_target = prev_model.forward(images)
                     logits_dist = logits[:, :-(self.n_classes - self.n_known)]
