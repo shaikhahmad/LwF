@@ -114,6 +114,7 @@ class Model(nn.Module):
             new_classes = [classes[i] for i in range(1, len(classes))]
         else:
             new_classes = [cl for cl in classes if class_map[cl] >= self.n_known]
+            print('-----------------------------',new_classes)
 
         if len(new_classes) > 0:
             self.increment_classes(new_classes)
