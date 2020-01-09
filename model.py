@@ -96,7 +96,7 @@ class Model(nn.Module):
         _, preds = torch.max(torch.softmax(self.forward(images), dim=1), dim=1, keepdim=False)
         return preds
 
-    def update(self, dataset, class_map, init_lr, batch_size, num_epochs):
+    def update(self, loader, classes, class_map, init_lr, batch_size, num_epochs):
 
         self.compute_means = True
 
@@ -104,7 +104,6 @@ class Model(nn.Module):
         prev_model = copy.deepcopy(self)
         # prev_model.cuda()
 
-        classes = list(set(dataset.targets))
         # print("Classes: ", classes)
         print('Known: ', self.n_known)
         if self.n_classes == 1 and self.n_known == 0:
@@ -115,9 +114,6 @@ class Model(nn.Module):
         if len(new_classes) > 0:
             self.increment_classes(new_classes)
             self.cuda()
-
-        loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
-                                             shuffle=True, num_workers=12)
 
         print("Batch Size (for n_classes classes) : ", len(dataset))
         optimizer = optim.SGD(self.parameters(), lr=init_lr, momentum=self.momentum,
