@@ -2,11 +2,9 @@ import torch
 
 torch.backends.cudnn.benchmark = True
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 import numpy as np
-from PIL import Image
 from tqdm import tqdm
 import time
 import copy
@@ -35,12 +33,8 @@ def kaiming_normal_init(m):
 
 
 class Model(nn.Module):
-    def __init__(self, classes, args):
+    def __init__(self, classes):
         # Hyper Parameters
-        self.init_lr = args.init_lr
-        self.num_epochs = args.num_epochs
-        self.batch_size = args.batch_size
-        self.lower_rate_epoch = [int(0.7 * self.num_epochs), int(0.9 * self.num_epochs)]  # hardcoded decay schedule
         self.lr_dec_factor = 10
 
         self.pretrained = False
@@ -92,18 +86,17 @@ class Model(nn.Module):
         self.n_classes += n
 
     def classify(self, images):
-        """Classify images by softmax
-
-		Args:
-			x: input image batch
-		Returns:
-			preds: Tensor of size (batch_size,)
-		"""
+        """
+        Classify images by softmax
+        Args:
+            x: input image batch
+            Returns:
+                preds: Tensor of size (batch_size,)
+         """
         _, preds = torch.max(torch.softmax(self.forward(images), dim=1), dim=1, keepdim=False)
-
         return preds
 
-    def update(self, dataset, class_map):
+    def update(self, dataset, class_map, init_lr, batch_size, num_epochs):
 
         self.compute_means = True
 
@@ -123,15 +116,15 @@ class Model(nn.Module):
             self.increment_classes(new_classes)
             self.cuda()
 
-        loader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size,
+        loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
                                              shuffle=True, num_workers=12)
 
         print("Batch Size (for n_classes classes) : ", len(dataset))
-        optimizer = optim.SGD(self.parameters(), lr=self.init_lr, momentum=self.momentum,
+        optimizer = optim.SGD(self.parameters(), lr=init_lr, momentum=self.momentum,
                               weight_decay=self.weight_decay)
 
-        with tqdm(total=self.num_epochs) as pbar:
-            for epoch in range(self.num_epochs):
+        with tqdm(total=num_epochs) as pbar:
+            for epoch in range(num_epochs):
 
                 for i, (images, labels) in enumerate(loader):
                     seen_labels = []
@@ -155,7 +148,7 @@ class Model(nn.Module):
 
                     if (i + 1) % 1 == 0:
                         tqdm.write('Epoch [%d/%d], Iter [%d/%d] Loss: %.4f'
-                                   % (epoch + 1, self.num_epochs, i + 1, np.ceil(len(dataset) / self.batch_size),
+                                   % (epoch + 1, num_epochs, i + 1, np.ceil(len(dataset) / batch_size),
                                       loss.data))
 
                 pbar.update(1)

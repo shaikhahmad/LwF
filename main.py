@@ -118,7 +118,7 @@ with open(args.outfile, 'w') as file:
     # print('Class map: ', class_map)
     # print('All classes: ', all_classes)
 
-    model = Model(num_classes, args)
+    model = Model(num_classes)
     model.cuda()
     acc_matr = np.zeros((int(total_classes / num_classes), num_iters))
     for s in range(0, num_iters, num_classes):
@@ -138,7 +138,7 @@ with open(args.outfile, 'w') as file:
                                                    sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
         # Update representation via BackProp
-        model.update(train_set, class_map)
+        model.update(train_set, class_map, args.init_lr, args.batch_size, args.num_epochs)
         model.eval()
 
         model.n_known = model.n_classes
