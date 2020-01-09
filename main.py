@@ -138,7 +138,7 @@ with open(args.outfile, 'w') as file:
                                                    sampler=torch.utils.data.sampler.SubsetRandomSampler(test_indices))
 
         # Update representation via BackProp
-        model.update(train_set, class_map, args)
+        model.update(train_set, class_map)
         model.eval()
 
         model.n_known = model.n_classes
