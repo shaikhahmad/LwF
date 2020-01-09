@@ -35,7 +35,7 @@ def kaiming_normal_init(m):
 
 
 class Model(nn.Module):
-    def __init__(self, classes, classes_map, args):
+    def __init__(self, classes, args):
         # Hyper Parameters
         self.init_lr = args.init_lr
         self.num_epochs = args.num_epochs
@@ -64,7 +64,6 @@ class Model(nn.Module):
         # n_known is set to n_classes after all data for an iteration has been processed
         self.n_classes = 0
         self.n_known = 0
-        self.classes_map = classes_map
 
     def forward(self, x):
         x = self.feature_extractor(x)
