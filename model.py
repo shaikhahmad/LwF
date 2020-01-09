@@ -122,32 +122,34 @@ class Model(nn.Module):
         optimizer = optim.SGD(self.parameters(), lr=init_lr, momentum=self.momentum,
                               weight_decay=self.weight_decay)
 
-        with tqdm(total=num_epochs) as pbar:
-            for epoch in range(num_epochs):
+        # with tqdm(total=num_epochs) as pbar:
+        for epoch in range(num_epochs):
 
-                for i, (images, labels) in enumerate(loader):
-                    seen_labels = []
-                    images = Variable(torch.FloatTensor(images)).cuda()
-                    seen_labels = torch.LongTensor([class_map[label] for label in labels.numpy()])
-                    labels = Variable(seen_labels).cuda()
+            for i, (images, labels) in enumerate(tqdm(loader)):
+                seen_labels = []
+                images = Variable(torch.FloatTensor(images)).cuda()
+                seen_labels = torch.LongTensor([class_map[label] for label in labels.numpy()])
+                labels = Variable(seen_labels).cuda()
 
-                    optimizer.zero_grad()
-                    logits = self.forward(images)
-                    cls_loss = nn.CrossEntropyLoss()(logits, labels)
-                    if self.n_classes // len(new_classes) > 1:
-                        dist_target = prev_model.forward(images)
-                        logits_dist = logits[:, :-(self.n_classes - self.n_known)]
-                        dist_loss = MultiClassCrossEntropy(logits_dist, dist_target, 2)
-                        loss = dist_loss + cls_loss
-                    else:
-                        loss = cls_loss
+                optimizer.zero_grad()
+                logits = self.forward(images)
+                cls_loss = nn.CrossEntropyLoss()(logits, labels)
+                if self.n_classes // len(new_classes) > 1:
+                    dist_target = prev_model.forward(images)
+                    logits_dist = logits[:, :-(self.n_classes - self.n_known)]
+                    dist_loss = MultiClassCrossEntropy(logits_dist, dist_target, 2)
+                    loss = dist_loss + cls_loss
+                else:
+                    loss = cls_loss
 
-                    loss.backward()
-                    optimizer.step()
+                loss.backward()
+                optimizer.step()
 
-                    if (i + 1) % 1 == 0:
-                        tqdm.write('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(epoch + 1, num_epochs, i + 1,
-                                                                                 np.ceil(len(loader.dataset) / batch_size)
-                                                                                 ,loss.data))
+                if (i + 1) % 1 == 0:
+                    tqdm.write('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(epoch + 1, num_epochs, i + 1,
+                                                                             np.ceil(len(loader.dataset) / batch_size)
+                                                                             ,loss.data))
 
-                pbar.update(1)
+            # pbar.update(1)
+
+        self.n_known = self.n_classes
