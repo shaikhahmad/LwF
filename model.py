@@ -146,10 +146,12 @@ class Model(nn.Module):
                 optimizer.step()
 
                 if (i + 1) % 1 == 0:
-                    tqdm.write('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(epoch + 1, num_epochs, i + 1,
-                                                                             np.ceil(len(loader.dataset) / batch_size)
-                                                                             ,loss.data))
+                    print('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(
+                        epoch + 1,
+                        num_epochs,
+                        i + 1,
+                        np.ceil(len(loader.dataset) / batch_size),
+                        loss.data))
 
-            # pbar.update(1)
 
         self.n_known = self.n_classes
