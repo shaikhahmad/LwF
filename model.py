@@ -106,7 +106,8 @@ class Model(nn.Module):
 
         try:
             classes = list(set(loader.dataset.targets))
-        except : classes = list(set(loader.dataset.labels))
+        except:
+            classes = list(set(loader.dataset.labels))
         # print("Classes: ", classes)
         print('Known: ', self.n_known)
         if self.n_classes == 1 and self.n_known == 0:
@@ -134,6 +135,7 @@ class Model(nn.Module):
                 optimizer.zero_grad()
                 logits = self.forward(images)
                 cls_loss = nn.CrossEntropyLoss()(logits, labels)
+                print(self.n_classes, len(new_classes))
                 if self.n_classes // len(new_classes) > 1:
                     dist_target = prev_model.forward(images)
                     logits_dist = logits[:, :-(self.n_classes - self.n_known)]
@@ -145,10 +147,6 @@ class Model(nn.Module):
                 loss.backward()
                 optimizer.step()
 
-            print('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(
-                        epoch + 1,
-                        num_epochs,
-                        i + 1,
-                        np.ceil(len(loader.dataset) / batch_size),
-                        loss.data))
+            print('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(epoch + 1, num_epochs, i + 1,
+                                                                np.ceil(len(loader.dataset) / batch_size), loss.data))
         # self.n_known = self.n_classes
