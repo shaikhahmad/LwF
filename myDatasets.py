@@ -91,6 +91,7 @@ class CIFAR10(datasets.CIFAR10):
     def __init__(self, root, extend=0, *args, **kwargs):
         self.extend = extend
         super().__init__(root, *args, **kwargs)
+        self.targets = [x+extend for x in self.targets]
 
     def __getitem__(self, index):
         """
@@ -112,7 +113,7 @@ class CIFAR10(datasets.CIFAR10):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return img, target + self.extend
+        return img, target
 
 class MNIST(datasets.MNIST):
     def __init__(self, root, extend=0, *args, **kwargs):
