@@ -96,7 +96,7 @@ class Model(nn.Module):
         _, preds = torch.max(torch.softmax(self.forward(images), dim=1), dim=1, keepdim=False)
         return preds
 
-    def update(self, loader, classes, class_map, init_lr, batch_size, num_epochs):
+    def update(self, loader, class_map, init_lr, batch_size, num_epochs):
 
         self.compute_means = True
 
@@ -104,6 +104,7 @@ class Model(nn.Module):
         prev_model = copy.deepcopy(self)
         # prev_model.cuda()
 
+        classes = list(set(loader.dataset.targets))
         # print("Classes: ", classes)
         print('Known: ', self.n_known)
         if self.n_classes == 1 and self.n_known == 0:
@@ -143,8 +144,8 @@ class Model(nn.Module):
                     optimizer.step()
 
                     if (i + 1) % 1 == 0:
-                        tqdm.write('Epoch [%d/%d], Iter [%d/%d] Loss: %.4f'
-                                   % (epoch + 1, num_epochs, i + 1, np.ceil(len(loader.dataset) / batch_size),
-                                      loss.data))
+                        tqdm.write('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(epoch + 1, num_epochs, i + 1,
+                                                                                 np.ceil(len(loader.dataset) / batch_size)
+                                                                                 ,loss.data))
 
                 pbar.update(1)
