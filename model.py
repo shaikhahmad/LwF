@@ -115,7 +115,7 @@ class Model(nn.Module):
             self.increment_classes(new_classes)
             self.cuda()
 
-        print("Batch Size (for n_classes classes) : ", len(dataset))
+        print("Batch Size (for n_classes classes) : ", len(loader.dataset))
         optimizer = optim.SGD(self.parameters(), lr=init_lr, momentum=self.momentum,
                               weight_decay=self.weight_decay)
 
@@ -144,7 +144,7 @@ class Model(nn.Module):
 
                     if (i + 1) % 1 == 0:
                         tqdm.write('Epoch [%d/%d], Iter [%d/%d] Loss: %.4f'
-                                   % (epoch + 1, num_epochs, i + 1, np.ceil(len(dataset) / batch_size),
+                                   % (epoch + 1, num_epochs, i + 1, np.ceil(len(loader.dataset) / batch_size),
                                       loss.data))
 
                 pbar.update(1)
