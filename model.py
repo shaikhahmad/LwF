@@ -145,13 +145,10 @@ class Model(nn.Module):
                 loss.backward()
                 optimizer.step()
 
-                if (i + 1) % 1 == 0:
-                    print('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(
+            print('Epoch [{}/{}], Iter [{}/{}] Loss: {}'.format(
                         epoch + 1,
                         num_epochs,
                         i + 1,
                         np.ceil(len(loader.dataset) / batch_size),
                         loss.data))
-
-
-        self.n_known = self.n_classes
+        # self.n_known = self.n_classes
