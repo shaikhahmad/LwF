@@ -194,3 +194,5 @@ with open(args.outfile, 'w') as file:
         model.train()
         githash = subprocess.check_output(['git', 'describe', '--always'])
         np.savez(args.matr, acc_matr=acc_matr, hyper_params=args, githash=githash)
+
+# dsets.SVHN()

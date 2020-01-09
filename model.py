@@ -104,7 +104,9 @@ class Model(nn.Module):
         prev_model = copy.deepcopy(self)
         # prev_model.cuda()
 
-        classes = list(set(loader.dataset.targets))
+        try:
+            classes = list(set(loader.dataset.targets))
+        except : classes = list(set(loader.dataset.labels))
         # print("Classes: ", classes)
         print('Known: ', self.n_known)
         if self.n_classes == 1 and self.n_known == 0:
