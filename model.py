@@ -147,4 +147,5 @@ class Model(nn.Module):
                 optimizer.step()
 
             print('Epoch [{}/{}], Loss: {}'.format(epoch + 1, num_epochs, i + 1, loss.data))
+        self.eval()
         self.n_known = self.n_classes
