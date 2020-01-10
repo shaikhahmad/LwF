@@ -1,6 +1,6 @@
 import torch
 
-torch.backends.cudnn.benchmark = True
+# torch.backends.cudnn.benchmark = True
 import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
@@ -23,7 +23,6 @@ def MultiClassCrossEntropy(logits, labels, T):
     outputs = -torch.mean(outputs, dim=0, keepdim=False)
     # print('OUT: ', outputs)
     return Variable(outputs).cuda()
-
 
 def kaiming_normal_init(m):
     if isinstance(m, nn.Conv2d):
@@ -135,13 +134,13 @@ class Model(nn.Module):
                 optimizer.zero_grad()
                 logits = self.forward(images)
                 cls_loss = nn.CrossEntropyLoss()(logits, labels)
+                dist_loss = 0
                 if self.n_classes // len(new_classes) > 1:
                     dist_target = prev_model.forward(images)
                     logits_dist = logits[:, :-(self.n_classes - self.n_known)]
-                    dist_loss = MultiClassCrossEntropy(logits_dist, dist_target, 2)
-                    loss = dist_loss + cls_loss
-                else:
-                    loss = cls_loss
+                    dist_loss = MultiClassCrossEntropy(logits_dist, dist_target, T=2)
+
+                loss = dist_loss + cls_loss
 
                 loss.backward()
                 optimizer.step()
