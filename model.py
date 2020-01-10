@@ -68,9 +68,10 @@ class Model(nn.Module):
         """Add n classes in the final fc layer"""
         n = len(new_classes)
         print('new classes: ', n)
+        weight = self.fc.weight.data
+        bias = self.fc.bias.data
         in_features = self.fc.in_features
         out_features = self.fc.out_features
-        weight = self.fc.weight.data
 
         if self.n_known == 0:
             new_out_features = n
@@ -83,6 +84,12 @@ class Model(nn.Module):
         kaiming_normal_init(self.fc.weight)
         self.fc.weight.data[:out_features] = weight
         self.n_classes += n
+
+
+
+        self.fc = nn.Linear(in_feature, numclass, bias=True)
+        self.fc.weight.data[:out_feature] = weight
+        self.fc.bias.data[:out_feature] = bias
 
     def classify(self, images):
         """
